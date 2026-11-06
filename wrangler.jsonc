@@ -1,11 +1,22 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "laredperu",
+  "main": "./worker/index.js",
   "compatibility_date": "2026-11-01",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash"
+    "html_handling": "auto-trailing-slash",
+    // el Worker decide primero (para redirigir www -> dominio principal)
+    "run_worker_first": true
   },
+  "routes": [
+    { "pattern": "redperu.org", "custom_domain": true },
+    { "pattern": "www.redperu.org", "custom_domain": true }
+  ],
+  // workers.dev queda activo pero redirige a redperu.org (ver worker/index.js)
+  "workers_dev": true,
+  "preview_urls": false,
   "observability": { "enabled": true }
 }
