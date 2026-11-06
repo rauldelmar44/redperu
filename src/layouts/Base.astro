@@ -59,37 +59,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       if (reduce || !('IntersectionObserver' in window)) {
         targets.forEach((el) => el.classList.add('in'));
       } else {
+        // Bidireccional: se enfoca al entrar y vuelve a desenfocarse al salir (arriba o abajo).
         const io = new IntersectionObserver(
           (entries) => {
             for (const e of entries) {
-              if (e.isIntersecting) {
-                const el = e.target as HTMLElement;
-                el.classList.add('in');
-                io.unobserve(el);
-                // al terminar, liberar el elemento para que sus propias transiciones (hover) sean ágiles
-                const delay = parseInt(el.style.getPropertyValue('--d')) || 0;
-                setTimeout(() => {
-                  el.removeAttribute('data-reveal');
-                  el.classList.remove('in');
-                }, delay + 1200);
-              }
+              const el = e.target as HTMLElement;
+              const enter = e.isIntersecting;
+              // al salir hacia arriba se desvanece "hacia arriba"; hacia abajo, "hacia abajo"
+              el.classList.toggle('above', !enter && e.boundingClientRect.top < 0);
+              el.classList.toggle('in', enter);
             }
           },
-          { threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
+          { threshold: 0.08 },
         );
-        targets.forEach((el) => {
-          // lo que ya asoma en la primera pantalla entra de inmediato (con su retardo escalonado)
-          if (el.getBoundingClientRect().top < window.innerHeight) {
-            el.classList.add('in');
-            const delay = parseInt(el.style.getPropertyValue('--d')) || 0;
-            setTimeout(() => {
-              el.removeAttribute('data-reveal');
-              el.classList.remove('in');
-            }, delay + 1200);
-          } else {
-            io.observe(el);
-          }
-        });
+        targets.forEach((el) => io.observe(el));
       }
     </script>
   </body>

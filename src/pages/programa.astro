@@ -4,7 +4,6 @@ import Base from '../layouts/Base.astro';
 import IconTile from '../components/IconTile.astro';
 import PageTitle from '../components/PageTitle.astro';
 import NetworkCanvas from '../components/NetworkCanvas.astro';
-import BinaryField from '../components/BinaryField.astro';
 import { benefits, route } from '../data/content';
 ---
 
@@ -37,8 +36,7 @@ import { benefits, route } from '../data/content';
     </section>
 
     <section class="kit" data-reveal>
-      <BinaryField opacity={0.16} />
-      <NetworkCanvas density={0.55} link={130} opacity={0.45} />
+      <NetworkCanvas density={0.7} link={130} opacity={0.6} />
       <div class="kit-head">
         <h2 class="h2">Kit de beneficios</h2>
         <p>Lo que recibe cada empresa miembro de la RED.</p>

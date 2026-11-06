@@ -5,7 +5,6 @@ import Base from '../layouts/Base.astro';
 import IconTile from '../components/IconTile.astro';
 import LogoMarquee from '../components/LogoMarquee.astro';
 import NetworkCanvas from '../components/NetworkCanvas.astro';
-import BinaryField from '../components/BinaryField.astro';
 import { impact, value } from '../data/content';
 
 const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
@@ -15,14 +14,7 @@ const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
   <div class="home">
     <!-- Hero -->
     <section class="hero">
-      <NetworkCanvas colors={brand} density={0.55} link={140} opacity={0.75} fadeCenter />
-      <div class="deco circle c1"></div>
-      <div class="deco circle c2"></div>
-      <div class="deco circle c3"></div>
-      <div class="deco circle c4"></div>
-      <div class="deco circle c5"></div>
-      <div class="deco dots d1"></div>
-      <div class="deco dots d2"></div>
+      <NetworkCanvas colors={brand} density={0.6} link={140} opacity={0.85} fadeCenter />
 
       <div class="hero-grid">
         <div class="hero-copy" data-stagger="110">
@@ -42,8 +34,7 @@ const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
 
         <div data-reveal style="--d:300ms">
           <div class="impact">
-            <BinaryField opacity={0.18} cell={16} />
-            <NetworkCanvas density={0.7} link={110} opacity={0.4} />
+            <NetworkCanvas density={0.8} link={115} opacity={0.55} />
             <div class="impact-head">
               <TrendingUp size={22} />
               <p>Nuestro impacto</p>
@@ -96,8 +87,7 @@ const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
     <!-- CTA -->
     <section class="container" data-reveal>
       <div class="cta">
-        <BinaryField color="#C9C5E6" opacity={0.28} />
-        <NetworkCanvas colors={['#ffffff', '#13B3A0', '#9B5CF6']} density={0.6} link={120} opacity={0.5} />
+        <NetworkCanvas colors={['#ffffff', '#13B3A0', '#9B5CF6']} density={0.75} link={125} opacity={0.65} />
         <div class="deco circle" style="right:-60px;top:-60px;width:220px;height:220px;background:linear-gradient(135deg,#0B8E6B,#1D8FE8);opacity:.9"></div>
         <div class="deco circle" style="right:120px;bottom:-80px;width:160px;height:160px;background:#6D4FE0;opacity:.9"></div>
         <div class="cta-copy">
@@ -155,18 +145,6 @@ const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
     overflow: hidden;
     padding: 88px 24px 72px;
   }
-  .c1 { top: -80px; right: -60px; width: 260px; height: 260px; background: linear-gradient(135deg, #1d8fe8, #6d4fe0); opacity: 0.9; animation: drift 14s ease-in-out infinite; }
-  .c2 { top: 60px; right: 120px; width: 150px; height: 150px; background: linear-gradient(135deg, #0b8e6b, #13b3a0); opacity: 0.85; mix-blend-mode: multiply; animation: drift 11s ease-in-out infinite reverse; }
-  .c3 { top: -30px; right: 230px; width: 90px; height: 90px; background: #6d4fe0; opacity: 0.7; mix-blend-mode: multiply; animation: drift 9s ease-in-out infinite; }
-  .c4 { bottom: -90px; left: -70px; width: 240px; height: 240px; background: linear-gradient(135deg, #6d4fe0, #1d8fe8); opacity: 0.9; animation: drift 16s ease-in-out infinite reverse; }
-  .c5 { bottom: 40px; left: 120px; width: 120px; height: 120px; background: linear-gradient(135deg, #13b3a0, #0b8e6b); opacity: 0.85; mix-blend-mode: multiply; animation: drift 12s ease-in-out infinite; }
-  .d1 { top: 24px; left: 40%; width: 96px; height: 96px; opacity: 0.9; }
-  .d2 { bottom: 60px; right: 40px; width: 96px; height: 112px; opacity: 0.9; }
-  @keyframes drift {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(10px, 14px); }
-  }
-
   .hero-grid {
     position: relative;
     max-width: 1180px;
@@ -376,12 +354,6 @@ const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
     .hero {
       padding: 36px 16px 56px;
     }
-    /* decoración más discreta para no tapar el texto */
-    .c1 { top: -110px; right: -110px; width: 200px; height: 200px; }
-    .c2 { top: -20px; right: -30px; width: 90px; height: 90px; }
-    .c3, .c5, .d1 { display: none; }
-    .c4 { bottom: -120px; left: -110px; width: 200px; height: 200px; }
-    .d2 { bottom: 12px; right: 12px; width: 64px; height: 64px; }
     .hero-grid {
       grid-template-columns: 1fr;
       gap: 36px;
