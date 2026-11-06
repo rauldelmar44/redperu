@@ -1,8 +1,8 @@
 export const site = {
   name: 'Red de Empresas y Discapacidad · Perú',
   shortName: 'La RED Perú',
-  domain: 'laredperu.com',
-  email: 'reddeempresasydiscapacidad@gmail.com',
+  domain: 'redperu.org',
+  email: 'contacto@redperu.org',
   description:
     'Red de empresas e instituciones aliadas que promueve la inclusión socio-laboral, el trabajo decente y la empleabilidad de las personas con discapacidad en el Perú.',
 };

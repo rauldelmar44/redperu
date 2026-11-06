@@ -14,6 +14,8 @@ interface Props {
   opacity?: number;
   /** Desvanecer el centro para que el texto respire. */
   fadeCenter?: boolean;
+  /** Fondo global fijo a la ventana, detrás de todo el contenido. */
+  fixed?: boolean;
   class?: string;
 }
 
@@ -23,12 +25,13 @@ const {
   link = 130,
   opacity = 1,
   fadeCenter = false,
+  fixed = false,
   class: className,
 } = Astro.props;
 ---
 
 <canvas
-  class:list={['net', className, { fade: fadeCenter }]}
+  class:list={['net', className, { fade: fadeCenter, fixed }]}
   data-network
   data-colors={colors.join(',')}
   data-density={density}
@@ -62,17 +65,21 @@ const {
     let raf = 0;
     const pointer = { x: -9999, y: -9999, active: false };
 
+    const makeNode = (): Node => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: 1.4 + Math.random() * 2.2,
+      c: colors[Math.floor(Math.random() * colors.length)],
+    });
+    // ajusta la cantidad de nodos al área sin reiniciar los existentes
+    // (evita "saltos" cuando la barra del navegador móvil cambia el alto)
     const seed = () => {
       const count = Math.max(10, Math.min(90, Math.round(((w * h) / 10000) * density)));
-      nodes = Array.from({ length: count }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        r: 1.4 + Math.random() * 2.2,
-        c: colors[Math.floor(Math.random() * colors.length)],
-      }));
-      pulses = [];
+      if (nodes.length > count) nodes.length = count;
+      while (nodes.length < count) nodes.push(makeNode());
+      pulses = pulses.filter((p) => p.a < count && p.b < count);
     };
 
     const resize = () => {
@@ -214,6 +221,10 @@ const {
     height: 100%;
     pointer-events: none;
     display: block;
+  }
+  .fixed {
+    position: fixed;
+    z-index: -1;
   }
   .fade {
     -webkit-mask-image: radial-gradient(ellipse 55% 60% at 50% 50%, transparent 15%, #000 85%);

@@ -44,6 +44,10 @@ body {
   overflow-x: hidden;
   overflow-x: clip;
 }
+/* el fondo vive solo en <html> para que el canvas global (z-index:-1) se vea encima */
+body {
+  background: transparent;
+}
 
 a {
   color: var(--green);

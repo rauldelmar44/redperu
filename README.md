@@ -1,4 +1,4 @@
-# laredperu.com — Astro
+# redperu.org — Astro
 
 Sitio estático de la Red de Empresas y Discapacidad – Perú. Astro 7, Figtree (fontsource), iconos Lucide (`@lucide/astro`).
 

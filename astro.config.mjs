@@ -2,6 +2,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://laredperu.com',
+  site: 'https://redperu.org',
   trailingSlash: 'ignore',
 });

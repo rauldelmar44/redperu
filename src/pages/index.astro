@@ -4,17 +4,14 @@ import TrendingUp from '@lucide/astro/icons/trending-up';
 import Base from '../layouts/Base.astro';
 import IconTile from '../components/IconTile.astro';
 import LogoMarquee from '../components/LogoMarquee.astro';
-import NetworkCanvas from '../components/NetworkCanvas.astro';
 import { impact, value } from '../data/content';
 
-const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
 ---
 
 <Base>
   <div class="home">
     <!-- Hero -->
     <section class="hero">
-      <NetworkCanvas colors={brand} density={0.6} link={140} opacity={0.85} fadeCenter />
 
       <div class="hero-grid">
         <div class="hero-copy" data-stagger="110">
@@ -34,7 +31,6 @@ const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
 
         <div data-reveal style="--d:300ms">
           <div class="impact">
-            <NetworkCanvas density={0.8} link={115} opacity={0.55} />
             <div class="impact-head">
               <TrendingUp size={22} />
               <p>Nuestro impacto</p>
@@ -87,7 +83,6 @@ const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
     <!-- CTA -->
     <section class="container" data-reveal>
       <div class="cta">
-        <NetworkCanvas colors={['#ffffff', '#13B3A0', '#9B5CF6']} density={0.75} link={125} opacity={0.65} />
         <div class="deco circle" style="right:-60px;top:-60px;width:220px;height:220px;background:linear-gradient(135deg,#0B8E6B,#1D8FE8);opacity:.9"></div>
         <div class="deco circle" style="right:120px;bottom:-80px;width:160px;height:160px;background:#6D4FE0;opacity:.9"></div>
         <div class="cta-copy">
