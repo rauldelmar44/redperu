@@ -1,0 +1,14 @@
+{
+  "name": "Red de Empresas y Discapacidad · Perú",
+  "short_name": "La RED Perú",
+  "lang": "es-PE",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBFBFD",
+  "theme_color": "#0B8E6B",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
