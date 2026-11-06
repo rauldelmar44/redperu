@@ -1,0 +1,211 @@
+---
+import Calendar from '@lucide/astro/icons/calendar';
+import CalendarCheck from '@lucide/astro/icons/calendar-check';
+import Base from '../layouts/Base.astro';
+import IconTile from '../components/IconTile.astro';
+import PageTitle from '../components/PageTitle.astro';
+import { advances, committees, roles } from '../data/content';
+---
+
+<Base title="Nosotros">
+  <div class="page">
+    <section class="intro">
+      <PageTitle eyebrow="Quiénes somos">
+        Una red de empresas e <span class="grad-text">instituciones aliadas</span>
+      </PageTitle>
+      <div class="intro-copy" data-stagger="140">
+        <p>
+          Somos una red de empresas e instituciones aliadas con el objetivo de promover la inclusión socio-laboral, el
+          trabajo decente y la empleabilidad de las personas con discapacidad.
+        </p>
+        <div class="purpose">
+          <div class="purpose-inner">
+            <p class="purpose-label">¿Qué nos inspira? Nuestro propósito</p>
+            <blockquote>
+              “Impulsamos la transformación de las empresas en agentes de inclusión para sumar más personas con
+              discapacidad a la fuerza laboral”
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack">
+      <h2 class="h2" data-reveal>Organización y roles</h2>
+      <div class="grid-auto" style="--min:280px" data-stagger="120">
+        {
+          roles.map((r) => (
+            <article class="card role">
+              <div class="role-head">
+                <IconTile icon={r.icon} bg={r.bg} size={44} radius={14} />
+                <h3 class="h3">{r.title}</h3>
+              </div>
+              <div><p class="label">Compuesto por</p><p class="txt">{r.who}</p></div>
+              <div><p class="label">Rol o funciones</p><p class="txt">{r.role}</p></div>
+              <div><p class="label">Implica</p><p class="txt">{r.means}</p></div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="grid-auto" style="--min:260px" data-stagger="120">
+      <div class="committees-intro">
+        <h2 class="h2">Comités y mesas de trabajo</h2>
+        <ul class="meetings">
+          <li><Calendar size={20} class="c-green" /> Reunión general: 01 vez cada 02 meses</li>
+          <li><CalendarCheck size={20} class="c-violet" /> Reunión de comité: mensual</li>
+        </ul>
+      </div>
+      {
+        committees.map((c) => (
+          <article class="committee" style={`background:${c.bg}`}>
+            <c.icon size={28} />
+            <h3>{c.title}</h3>
+            <p>{c.text}</p>
+          </article>
+        ))
+      }
+    </section>
+
+    <section class="stack">
+      <h2 class="h2" data-reveal>Principales avances en gestión inclusiva</h2>
+      <ol class="advances" data-stagger="70">
+        {
+          advances.map((text, i) => (
+            <li>
+              <span class="n">{i + 1}</span>
+              <p>{text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    align-items: start;
+  }
+  .intro-copy {
+    display: grid;
+    gap: 20px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .purpose {
+    background: linear-gradient(135deg, #0b8e6b, #1d8fe8, #6d4fe0);
+    padding: 3px;
+    border-radius: 22px;
+  }
+  .purpose-inner {
+    background: #fff;
+    border-radius: 20px;
+    padding: 26px;
+    display: grid;
+    gap: 8px;
+  }
+  .purpose-label {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  blockquote {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+  .stack {
+    display: grid;
+    gap: 24px;
+  }
+  .role {
+    gap: 18px;
+  }
+  .role-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .txt {
+    line-height: 1.5;
+    color: var(--text-card);
+  }
+  .committees-intro {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+  .meetings {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .meetings li {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--text);
+  }
+  .committee {
+    border-radius: 24px;
+    padding: 30px;
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    color: #fff;
+  }
+  .committee h3 {
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .committee p {
+    line-height: 1.5;
+    font-size: 15px;
+  }
+  .advances {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+  }
+  .advances li {
+    display: flex;
+    gap: 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+    align-items: flex-start;
+  }
+  .n {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0b8e6b, #1d8fe8);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .advances p {
+    line-height: 1.5;
+    color: var(--text-card);
+  }
+</style>

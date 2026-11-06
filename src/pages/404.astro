@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import PageTitle from '../components/PageTitle.astro';
+---
+
+<Base title="Página no encontrada">
+  <div class="page" style="gap:24px">
+    <PageTitle eyebrow="Error 404">
+      Esta página <span class="grad-text">no existe</span>
+    </PageTitle>
+    <p style="color:var(--text);font-size:18px">Puede que el enlace haya cambiado.</p>
+    <div><a href="/" class="btn btn-grad">Volver al inicio</a></div>
+  </div>
+</Base>

@@ -1,0 +1,222 @@
+---
+/**
+ * Red de conexiones animada: nodos que derivan, se enlazan por cercanía
+ * y dejan viajar "pulsos" de luz por los enlaces. Reacciona al puntero.
+ * Se pausa fuera de pantalla y queda estática con prefers-reduced-motion.
+ */
+interface Props {
+  /** Colores de nodos/enlaces (hex). */
+  colors?: string[];
+  /** Nodos por cada 10.000 px². */
+  density?: number;
+  /** Distancia máxima de enlace (px). */
+  link?: number;
+  opacity?: number;
+  /** Desvanecer el centro para que el texto respire. */
+  fadeCenter?: boolean;
+  class?: string;
+}
+
+const {
+  colors = ['#ffffff'],
+  density = 0.9,
+  link = 130,
+  opacity = 1,
+  fadeCenter = false,
+  class: className,
+} = Astro.props;
+---
+
+<canvas
+  class:list={['net', className, { fade: fadeCenter }]}
+  data-network
+  data-colors={colors.join(',')}
+  data-density={density}
+  data-link={link}
+  style={`opacity:${opacity}`}
+  aria-hidden="true"></canvas>
+
+<script>
+  type Node = { x: number; y: number; vx: number; vy: number; r: number; c: string };
+  type Pulse = { a: number; b: number; t: number; speed: number };
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const hexToRgb = (hex: string) => {
+    const h = hex.replace('#', '');
+    const n = parseInt(h.length === 3 ? h.split('').map((x) => x + x).join('') : h, 16);
+    return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+  };
+
+  function mount(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const colors = (canvas.dataset.colors || '#ffffff').split(',').map(hexToRgb);
+    const density = Number(canvas.dataset.density) || 0.9;
+    const linkDist = Number(canvas.dataset.link) || 130;
+
+    let w = 0, h = 0, dpr = 1;
+    let nodes: Node[] = [];
+    let pulses: Pulse[] = [];
+    let running = false;
+    let raf = 0;
+    const pointer = { x: -9999, y: -9999, active: false };
+
+    const seed = () => {
+      const count = Math.max(10, Math.min(90, Math.round(((w * h) / 10000) * density)));
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: 1.4 + Math.random() * 2.2,
+        c: colors[Math.floor(Math.random() * colors.length)],
+      }));
+      pulses = [];
+    };
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = Math.max(1, rect.width);
+      h = Math.max(1, rect.height);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      seed();
+      draw(0);
+    };
+
+    const draw = (dt: number) => {
+      ctx.clearRect(0, 0, w, h);
+      const L2 = linkDist * linkDist;
+
+      // movimiento
+      for (const n of nodes) {
+        n.x += n.vx * dt;
+        n.y += n.vy * dt;
+        if (n.x < -20) n.x = w + 20; else if (n.x > w + 20) n.x = -20;
+        if (n.y < -20) n.y = h + 20; else if (n.y > h + 20) n.y = -20;
+        if (pointer.active) {
+          const dx = pointer.x - n.x, dy = pointer.y - n.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 160 * 160 && d2 > 1) {
+            const f = (1 - Math.sqrt(d2) / 160) * 0.02 * dt;
+            n.x += dx * f * 0.05;
+            n.y += dy * f * 0.05;
+          }
+        }
+      }
+
+      // enlaces
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < L2) {
+            const alpha = (1 - d2 / L2) * 0.55;
+            ctx.strokeStyle = `rgba(${a.c},${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+            if (!reduce && dt > 0 && pulses.length < 14 && Math.random() < 0.0009 * dt) {
+              pulses.push({ a: i, b: j, t: 0, speed: 0.006 + Math.random() * 0.01 });
+            }
+          }
+        }
+      }
+
+      // enlaces al puntero
+      if (pointer.active) {
+        for (const n of nodes) {
+          const dx = pointer.x - n.x, dy = pointer.y - n.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < L2 * 1.4) {
+            ctx.strokeStyle = `rgba(${n.c},${(1 - d2 / (L2 * 1.4)) * 0.7})`;
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(pointer.x, pointer.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // pulsos viajando por los enlaces
+      pulses = pulses.filter((p) => {
+        p.t += p.speed * dt;
+        const a = nodes[p.a], b = nodes[p.b];
+        if (!a || !b || p.t >= 1) return false;
+        const x = a.x + (b.x - a.x) * p.t;
+        const y = a.y + (b.y - a.y) * p.t;
+        const g = ctx.createRadialGradient(x, y, 0, x, y, 7);
+        g.addColorStop(0, `rgba(${a.c},0.95)`);
+        g.addColorStop(1, `rgba(${a.c},0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.fill();
+        return true;
+      });
+
+      // nodos
+      for (const n of nodes) {
+        ctx.fillStyle = `rgba(${n.c},0.9)`;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
+    let last = 0;
+    const loop = (t: number) => {
+      const dt = last ? Math.min((t - last) / 16.67, 3) : 1;
+      last = t;
+      draw(dt);
+      if (running) raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (running || reduce) return;
+      running = true;
+      last = 0;
+      raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    new ResizeObserver(resize).observe(canvas);
+    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop())).observe(canvas);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+
+    const host = canvas.parentElement ?? canvas;
+    host.addEventListener('pointermove', (e) => {
+      const r = canvas.getBoundingClientRect();
+      pointer.x = e.clientX - r.left;
+      pointer.y = e.clientY - r.top;
+      pointer.active = true;
+    });
+    host.addEventListener('pointerleave', () => (pointer.active = false));
+  }
+
+  document.querySelectorAll<HTMLCanvasElement>('canvas[data-network]').forEach(mount);
+</script>
+
+<style>
+  .net {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: block;
+  }
+  .fade {
+    -webkit-mask-image: radial-gradient(ellipse 55% 60% at 50% 50%, transparent 15%, #000 85%);
+    mask-image: radial-gradient(ellipse 55% 60% at 50% 50%, transparent 15%, #000 85%);
+  }
+</style>

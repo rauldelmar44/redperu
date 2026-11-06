@@ -1,0 +1,175 @@
+---
+import ClipboardList from '@lucide/astro/icons/clipboard-list';
+import Upload from '@lucide/astro/icons/upload';
+import Base from '../layouts/Base.astro';
+import IconTile from '../components/IconTile.astro';
+import PageTitle from '../components/PageTitle.astro';
+import { commitments, requirements, steps } from '../data/content';
+import { links } from '../data/site';
+---
+
+<Base title="Únete" description="Proceso de adhesión a la Red de Empresas y Discapacidad: de la presentación a la firma en 12 días.">
+  <div class="page">
+    <section class="intro">
+      <PageTitle eyebrow="Proceso de adhesión">
+        De la presentación a la firma <span class="grad-text">en 12 días</span>
+      </PageTitle>
+      <div class="actions" data-reveal style="--d:200ms">
+        <a href={links.candidatura} target="_blank" rel="noopener" class="btn btn-grad">
+          <ClipboardList size={18} /> Formulario de candidatura
+        </a>
+        <a href={links.cargarLogo} target="_blank" rel="noopener" class="btn btn-outline">
+          <Upload size={18} /> Cargar logo y representante
+        </a>
+      </div>
+    </section>
+
+    <ol class="grid-auto steps" style="--min:220px" data-stagger="120">
+      {
+        steps.map((s) => (
+          <li class="card">
+            <div class="step-head">
+              <IconTile icon={s.icon} bg={s.bg} size={48} />
+              <span class="day">{s.day}</span>
+            </div>
+            <p class="step-text">{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <section class="two">
+      <div class="col" data-stagger="100">
+        <h2 class="h2 h2-sm">Compromiso de adhesión</h2>
+        {
+          commitments.map((c) => (
+            <div class="commit">
+              <span class="commit-icon"><c.icon size={20} class="c-green" /></span>
+              <div>
+                <h3>{c.title}</h3>
+                <p>{c.text}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      <div class="col" style="gap:14px" data-stagger="100">
+        <h2 class="h2 h2-sm">Requisitos de permanencia</h2>
+        {
+          requirements.map((r) => (
+            <div class="req">
+              <r.icon size={22} class="c-violet" />
+              <div>
+                <h3>{r.title}</h3>
+                <p>{r.text}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    align-items: end;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .steps .card {
+    gap: 14px;
+  }
+  .step-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .day {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--green-soft);
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+  .step-text {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .two {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+  }
+  .col {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+  }
+  .h2-sm {
+    font-size: 30px;
+  }
+  .commit {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .commit-icon {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--green-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .commit div,
+  .req div {
+    display: grid;
+    gap: 4px;
+  }
+  .commit h3,
+  .req h3 {
+    font-size: 17px;
+    font-weight: 800;
+  }
+  .commit p {
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .req {
+    background: var(--lilac-soft);
+    border-radius: 18px;
+    padding: 22px 24px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .req :global(svg) {
+    flex: none;
+    margin-top: 2px;
+  }
+  .req h3 {
+    color: var(--violet-dark);
+  }
+  .req p {
+    color: var(--text-card);
+    line-height: 1.5;
+  }
+</style>

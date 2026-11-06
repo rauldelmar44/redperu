@@ -1,0 +1,133 @@
+---
+import Check from '@lucide/astro/icons/check';
+import Base from '../layouts/Base.astro';
+import IconTile from '../components/IconTile.astro';
+import PageTitle from '../components/PageTitle.astro';
+import NetworkCanvas from '../components/NetworkCanvas.astro';
+import BinaryField from '../components/BinaryField.astro';
+import { benefits, route } from '../data/content';
+---
+
+<Base title="Programa">
+  <div class="page">
+    <PageTitle eyebrow="Ruta de aprendizaje" maxWidth={760}>
+      Seis etapas para una <span class="grad-text">gestión inclusiva</span> de personas con discapacidad
+    </PageTitle>
+
+    <section class="grid-auto" style="--min:280px" aria-label="Etapas" data-stagger="110">
+      {
+        route.map((s, i) => (
+          <article class="card">
+            <div class="stage-head">
+              <IconTile icon={s.icon} bg={s.bg} />
+              <span class="stage">Etapa 0{i + 1}</span>
+            </div>
+            <h3 class="h3">{s.title}</h3>
+            <ul class="checks">
+              {s.items.map((it) => (
+                <li>
+                  <Check size={16} class="c-green" />
+                  {it}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </section>
+
+    <section class="kit" data-reveal>
+      <BinaryField opacity={0.16} />
+      <NetworkCanvas density={0.55} link={130} opacity={0.45} />
+      <div class="kit-head">
+        <h2 class="h2">Kit de beneficios</h2>
+        <p>Lo que recibe cada empresa miembro de la RED.</p>
+      </div>
+      <div class="grid-auto kit-grid" style="--min:220px" data-stagger="90">
+        {
+          benefits.map((b) => (
+            <article class="glass">
+              <b.icon size={28} />
+              <h3 class="h3">{b.title}</h3>
+              <p>{b.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .stage-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .stage {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--muted-2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .checks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+  .checks li {
+    display: flex;
+    gap: 10px;
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .checks :global(svg) {
+    flex: none;
+    margin-top: 3px;
+  }
+  .kit {
+    position: relative;
+    overflow: hidden;
+    border-radius: 32px;
+    padding: 56px;
+    color: #fff;
+    display: grid;
+    gap: 36px;
+    background: var(--grad-block);
+    isolation: isolate;
+  }
+  .kit-head {
+    position: relative;
+    display: grid;
+    gap: 8px;
+  }
+  .kit-head p {
+    font-size: 17px;
+    line-height: 1.5;
+    max-width: 600px;
+  }
+  .kit-grid {
+    position: relative;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 22px;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .glass p {
+    line-height: 1.45;
+    font-size: 15px;
+  }
+  @media (max-width: 600px) {
+    .kit {
+      padding: 36px 24px;
+    }
+  }
+</style>

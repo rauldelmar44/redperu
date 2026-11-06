@@ -1,0 +1,112 @@
+---
+/**
+ * Campo de ceros y unos "vivo": una ola de luz recorre la trama,
+ * los dígitos parpadean y cambian de valor. Canvas, pausa fuera de pantalla.
+ */
+interface Props {
+  color?: string;
+  /** Tamaño de celda (px). */
+  cell?: number;
+  opacity?: number;
+  class?: string;
+}
+const { color = '#ffffff', cell = 18, opacity = 0.35, class: className } = Astro.props;
+---
+
+<canvas
+  class:list={['bin', className]}
+  data-binary
+  data-color={color}
+  data-cell={cell}
+  style={`opacity:${opacity}`}
+  aria-hidden="true"></canvas>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function mount(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const hex = (canvas.dataset.color || '#ffffff').replace('#', '');
+    const n = parseInt(hex, 16);
+    const rgb = `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+    const cell = Number(canvas.dataset.cell) || 18;
+
+    let w = 0, h = 0, cols = 0, rows = 0;
+    let bits: Uint8Array = new Uint8Array(0);
+    let seeds: Float32Array = new Float32Array(0);
+    let running = false, raf = 0, t0 = performance.now();
+
+    const resize = () => {
+      const r = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = Math.max(1, r.width);
+      h = Math.max(1, r.height);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cols = Math.ceil(w / cell);
+      rows = Math.ceil(h / cell);
+      bits = new Uint8Array(cols * rows).map(() => (Math.random() < 0.5 ? 0 : 1));
+      seeds = new Float32Array(cols * rows).map(() => Math.random() * Math.PI * 2);
+      draw(performance.now());
+    };
+
+    const draw = (now: number) => {
+      const t = (now - t0) / 1000;
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = `600 ${Math.round(cell * 0.72)}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const i = y * cols + x;
+          // ola diagonal + titileo individual
+          const wave = Math.sin(x * 0.22 + y * 0.31 - t * 1.6) * 0.5 + 0.5;
+          const twinkle = Math.sin(t * 2.2 + seeds[i]) * 0.5 + 0.5;
+          const a = Math.pow(wave, 3) * (0.35 + 0.65 * twinkle);
+          if (a < 0.04) continue;
+          if (!reduce && Math.random() < 0.004) bits[i] ^= 1;
+          ctx.fillStyle = `rgba(${rgb},${a.toFixed(3)})`;
+          ctx.fillText(bits[i] ? '1' : '0', x * cell + cell / 2, y * cell + cell / 2);
+        }
+      }
+    };
+
+    let lastFrame = 0;
+    const loop = (now: number) => {
+      // ~30fps es suficiente y ahorra batería
+      if (now - lastFrame > 33) {
+        draw(now);
+        lastFrame = now;
+      }
+      if (running) raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (running || reduce) return;
+      running = true;
+      raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    new ResizeObserver(resize).observe(canvas);
+    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop())).observe(canvas);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+  }
+
+  document.querySelectorAll<HTMLCanvasElement>('canvas[data-binary]').forEach(mount);
+</script>
+
+<style>
+  .bin {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: block;
+  }
+</style>

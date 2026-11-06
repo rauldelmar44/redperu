@@ -1,0 +1,48 @@
+---
+import Building from '@lucide/astro/icons/building';
+import Handshake from '@lucide/astro/icons/handshake';
+import Base from '../layouts/Base.astro';
+import PageTitle from '../components/PageTitle.astro';
+import LogoGrid from '../components/LogoGrid.astro';
+import { allyLogos, memberLogos } from '../data/members';
+---
+
+<Base title="Miembros">
+  <div class="page" style="gap:56px">
+    <PageTitle eyebrow="Nuestros miembros y aliados" maxWidth={760}>
+      Empresas comprometidas con la inclusión e instituciones <span class="grad-text">especializadas en D&amp;I</span>
+    </PageTitle>
+
+    <section class="group">
+      <div class="group-head">
+        <Building size={24} class="c-green" />
+        <h2>Empresas miembro</h2>
+      </div>
+      <LogoGrid logos={memberLogos} />
+    </section>
+
+    <section class="group">
+      <div class="group-head">
+        <Handshake size={24} class="c-violet" />
+        <h2>Instituciones aliadas</h2>
+      </div>
+      <LogoGrid logos={allyLogos} />
+    </section>
+  </div>
+</Base>
+
+<style>
+  .group {
+    display: grid;
+    gap: 20px;
+  }
+  .group-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .group-head h2 {
+    font-size: 24px;
+    font-weight: 800;
+  }
+</style>

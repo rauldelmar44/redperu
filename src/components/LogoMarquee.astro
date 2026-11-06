@@ -1,0 +1,100 @@
+---
+import { Image } from 'astro:assets';
+import { memberLogos } from '../data/members';
+
+const rows = [
+  { items: memberLogos.slice(0, 18), dir: 'left', dur: '48s' },
+  { items: memberLogos.slice(18, 36), dir: 'right', dur: '56s' },
+  { items: memberLogos.slice(36, 53), dir: 'left', dur: '52s' },
+];
+---
+
+<div class="marquee" aria-label="Logos de empresas miembro">
+  {
+    rows.map((row) => (
+      <div class="row">
+        <div class:list={['track', row.dir]} style={`animation-duration:${row.dur}`}>
+          {[...row.items, ...row.items].map((m, i) => (
+            <div class="logo" aria-hidden={i >= row.items.length ? 'true' : undefined}>
+              <Image src={m.src} alt={m.alt} width={276} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .marquee {
+    display: grid;
+    gap: 14px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .row {
+    overflow: hidden;
+    width: 100%;
+  }
+  .track {
+    display: flex;
+    gap: 14px;
+    width: max-content;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  .track.left {
+    animation-name: mqL;
+  }
+  .track.right {
+    animation-name: mqR;
+  }
+  .marquee:hover .track {
+    animation-play-state: paused;
+  }
+  .logo {
+    flex: none;
+    width: 170px;
+    height: 88px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-shadow: 0 4px 14px rgba(20, 18, 67, 0.05);
+  }
+  .logo :global(img) {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+  @keyframes mqL {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes mqR {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+  @media (max-width: 640px) {
+    .marquee,
+    .track {
+      gap: 10px;
+    }
+    .logo {
+      width: 128px;
+      height: 68px;
+      padding: 12px;
+      border-radius: 14px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .row {
+      overflow-x: auto;
+    }
+  }
+</style>

@@ -1,0 +1,433 @@
+---
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import TrendingUp from '@lucide/astro/icons/trending-up';
+import Base from '../layouts/Base.astro';
+import IconTile from '../components/IconTile.astro';
+import LogoMarquee from '../components/LogoMarquee.astro';
+import NetworkCanvas from '../components/NetworkCanvas.astro';
+import BinaryField from '../components/BinaryField.astro';
+import { impact, value } from '../data/content';
+
+const brand = ['#0B8E6B', '#13B3A0', '#1D8FE8', '#6D4FE0'];
+---
+
+<Base>
+  <div class="home">
+    <!-- Hero -->
+    <section class="hero">
+      <NetworkCanvas colors={brand} density={0.55} link={140} opacity={0.75} fadeCenter />
+      <div class="deco circle c1"></div>
+      <div class="deco circle c2"></div>
+      <div class="deco circle c3"></div>
+      <div class="deco circle c4"></div>
+      <div class="deco circle c5"></div>
+      <div class="deco dots d1"></div>
+      <div class="deco dots d2"></div>
+
+      <div class="hero-grid">
+        <div class="hero-copy" data-stagger="110">
+          <span class="chip"><span class="dot"></span>Red de empresas y discapacidad · Perú</span>
+          <h1>
+            Empresas que se transforman en agentes de <span class="grad-text hero-grad">inclusión</span>
+          </h1>
+          <p class="lead">
+            Somos una red de empresas e instituciones aliadas con el objetivo de promover la inclusión socio-laboral, el
+            trabajo decente y la empleabilidad de las personas con discapacidad.
+          </p>
+          <div class="actions">
+            <a href="/unete" class="btn btn-grad">Quiero ser miembro <ArrowRight size={18} /></a>
+            <a href="/nosotros" class="btn btn-outline">Conoce la RED</a>
+          </div>
+        </div>
+
+        <div data-reveal style="--d:300ms">
+          <div class="impact">
+            <BinaryField opacity={0.18} cell={16} />
+            <NetworkCanvas density={0.7} link={110} opacity={0.4} />
+            <div class="impact-head">
+              <TrendingUp size={22} />
+              <p>Nuestro impacto</p>
+            </div>
+            <dl class="impact-grid">
+              {
+                impact.map((i) => (
+                  <div>
+                    <dt class="num" data-count={i.value}>{i.value}</dt>
+                    <dd>{i.text}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logos -->
+    <section class="logos">
+      <div class="container logos-head" data-reveal>
+        <h2 class="h2">Más de 50 empresas <span class="c-green">ya forman parte</span></h2>
+        <a href="/miembros" class="more">Ver miembros y aliados <ArrowRight size={16} /></a>
+      </div>
+      <div data-reveal style="--d:120ms">
+        <LogoMarquee />
+      </div>
+    </section>
+
+    <!-- Propuesta de valor -->
+    <section class="container value">
+      <div class="value-head" data-reveal>
+        <p class="eyebrow">Nuestra propuesta de valor</p>
+        <h2 class="h2">Lo que hacemos por las empresas miembro</h2>
+      </div>
+      <div class="grid-auto" style="--min:250px" data-stagger="120">
+        {
+          value.map((v) => (
+            <article class="card lift">
+              <IconTile icon={v.icon} bg={v.bg} />
+              <h3 class="h3">{v.title}</h3>
+              <p class="body">{v.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="container" data-reveal>
+      <div class="cta">
+        <BinaryField color="#C9C5E6" opacity={0.28} />
+        <NetworkCanvas colors={['#ffffff', '#13B3A0', '#9B5CF6']} density={0.6} link={120} opacity={0.5} />
+        <div class="deco circle" style="right:-60px;top:-60px;width:220px;height:220px;background:linear-gradient(135deg,#0B8E6B,#1D8FE8);opacity:.9"></div>
+        <div class="deco circle" style="right:120px;bottom:-80px;width:160px;height:160px;background:#6D4FE0;opacity:.9"></div>
+        <div class="cta-copy">
+          <h2 class="h2">Suma a tu empresa a la RED</h2>
+          <p>
+            Un proceso de adhesión de 12 días, una ruta de aprendizaje anual y una comunidad de empresas comprometidas con
+            la inclusión.
+          </p>
+        </div>
+        <a href="/unete" class="btn btn-white">Ver proceso de adhesión <ArrowRight size={18} /></a>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  // Contadores animados en la tarjeta de impacto
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
+  if (!reduce) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        const el = e.target as HTMLElement;
+        const raw = el.dataset.count || '';
+        const target = parseInt(raw, 10);
+        const suffix = raw.replace(/^\d+/, '');
+        const start = performance.now();
+        const dur = 1600;
+        const tick = (now: number) => {
+          const p = Math.min((now - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        el.textContent = '0' + suffix;
+        setTimeout(() => requestAnimationFrame(tick), 350);
+      }
+    }, { threshold: 0.4 });
+    nums.forEach((n) => io.observe(n));
+  }
+</script>
+
+<style>
+  .home {
+    display: grid;
+    gap: 72px;
+    padding-bottom: 96px;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 88px 24px 72px;
+  }
+  .c1 { top: -80px; right: -60px; width: 260px; height: 260px; background: linear-gradient(135deg, #1d8fe8, #6d4fe0); opacity: 0.9; animation: drift 14s ease-in-out infinite; }
+  .c2 { top: 60px; right: 120px; width: 150px; height: 150px; background: linear-gradient(135deg, #0b8e6b, #13b3a0); opacity: 0.85; mix-blend-mode: multiply; animation: drift 11s ease-in-out infinite reverse; }
+  .c3 { top: -30px; right: 230px; width: 90px; height: 90px; background: #6d4fe0; opacity: 0.7; mix-blend-mode: multiply; animation: drift 9s ease-in-out infinite; }
+  .c4 { bottom: -90px; left: -70px; width: 240px; height: 240px; background: linear-gradient(135deg, #6d4fe0, #1d8fe8); opacity: 0.9; animation: drift 16s ease-in-out infinite reverse; }
+  .c5 { bottom: 40px; left: 120px; width: 120px; height: 120px; background: linear-gradient(135deg, #13b3a0, #0b8e6b); opacity: 0.85; mix-blend-mode: multiply; animation: drift 12s ease-in-out infinite; }
+  .d1 { top: 24px; left: 40%; width: 96px; height: 96px; opacity: 0.9; }
+  .d2 { bottom: 60px; right: 40px; width: 96px; height: 112px; opacity: 0.9; }
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(10px, 14px); }
+  }
+
+  .hero-grid {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 48px;
+    align-items: center;
+  }
+  .hero-copy {
+    display: grid;
+    gap: 24px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--violet-dark);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 14px rgba(20, 18, 67, 0.06);
+  }
+  .dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #0b8e6b, #6d4fe0);
+    animation: ping 2.4s ease-in-out infinite;
+  }
+  @keyframes ping {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(109, 79, 224, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(109, 79, 224, 0); }
+  }
+  h1 {
+    font-size: clamp(40px, 5.6vw, 72px);
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+  .hero-grad {
+    background-image: linear-gradient(90deg, #0b8e6b 0%, #13b3a0 25%, #1d8fe8 50%, #6d4fe0 75%, #0b8e6b 100%);
+    background-size: 200% 100%;
+    animation: shine 6s linear infinite;
+  }
+  @keyframes shine {
+    to { background-position: -200% 0; }
+  }
+  .lead {
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--text);
+    max-width: 560px;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Impact card */
+  .impact {
+    position: relative;
+    border-radius: 32px;
+    padding: 40px;
+    color: #fff;
+    display: grid;
+    gap: 28px;
+    min-height: 380px;
+    align-content: center;
+    background: var(--grad-block);
+    box-shadow: 0 30px 60px rgba(29, 143, 232, 0.25);
+    animation: floaty 7s ease-in-out infinite;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .impact-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .impact-head p {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .impact-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    margin: 0;
+  }
+  .num {
+    font-size: 58px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .impact-grid dd {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+
+  /* Logos */
+  .logos {
+    display: grid;
+    gap: 28px;
+    overflow: hidden;
+  }
+  .logos-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px 16px;
+    flex-wrap: wrap;
+  }
+  .more {
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .more :global(svg) {
+    transition: transform 0.2s;
+  }
+  .more:hover :global(svg) {
+    transform: translateX(4px);
+  }
+
+  /* Value */
+  .value {
+    display: grid;
+    gap: 28px;
+  }
+  .value-head {
+    display: grid;
+    gap: 8px;
+    max-width: 640px;
+  }
+  .body {
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(109, 79, 224, 0.12);
+  }
+
+  /* CTA */
+  .cta {
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+    border-radius: 32px;
+    padding: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    isolation: isolate;
+  }
+  .cta-copy {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    max-width: 620px;
+  }
+  .cta-copy h2 {
+    color: #fff;
+  }
+  .cta-copy p {
+    color: var(--lilac-text);
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .cta .btn {
+    position: relative;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 640px) {
+    .home {
+      gap: 56px;
+      padding-bottom: 72px;
+    }
+    .hero {
+      padding: 36px 16px 56px;
+    }
+    /* decoración más discreta para no tapar el texto */
+    .c1 { top: -110px; right: -110px; width: 200px; height: 200px; }
+    .c2 { top: -20px; right: -30px; width: 90px; height: 90px; }
+    .c3, .c5, .d1 { display: none; }
+    .c4 { bottom: -120px; left: -110px; width: 200px; height: 200px; }
+    .d2 { bottom: 12px; right: 12px; width: 64px; height: 64px; }
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    .hero-copy {
+      gap: 18px;
+    }
+    .chip {
+      font-size: 11px;
+      padding: 6px 12px;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: clamp(36px, 10.5vw, 44px);
+    }
+    .lead {
+      font-size: 17px;
+    }
+    .actions {
+      flex-direction: column;
+    }
+    .actions .btn {
+      width: 100%;
+    }
+    .impact {
+      padding: 28px 24px;
+      min-height: 0;
+      border-radius: 26px;
+      gap: 22px;
+      animation: none;
+    }
+    .impact-grid {
+      gap: 20px 16px;
+    }
+    .num {
+      font-size: 42px;
+    }
+    .impact-grid dd {
+      font-size: 14px;
+    }
+    .cta {
+      padding: 36px 24px 40px;
+      border-radius: 26px;
+    }
+    .cta .btn {
+      width: 100%;
+    }
+  }
+</style>

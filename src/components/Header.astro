@@ -1,0 +1,191 @@
+---
+import { Image } from 'astro:assets';
+import Menu from '@lucide/astro/icons/menu';
+import X from '@lucide/astro/icons/x';
+import logo from '../assets/logo-red.png';
+import { nav } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="header" data-header>
+  <div class="topbar"></div>
+  <div class="inner">
+    <a href="/" class="brand" aria-label="Inicio · Red de Empresas y Discapacidad">
+      <Image src={logo} alt="Red de Empresas y Discapacidad" height={92} class="logo" loading="eager" />
+    </a>
+
+    <nav id="menu-principal" class="nav" aria-label="Principal">
+      {
+        nav.map((n) => (
+          <a href={n.href} class:list={['pill', { active: isActive(n.href) }]} aria-current={isActive(n.href) ? 'page' : undefined}>
+            {n.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a href="/unete" class="cta">Postula</a>
+
+    <button class="toggle" type="button" aria-controls="menu-principal" aria-expanded="false" aria-label="Abrir menú">
+      <Menu size={24} class="i-open" />
+      <X size={24} class="i-close" />
+    </button>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const btn = header?.querySelector<HTMLButtonElement>('.toggle');
+  if (header && btn) {
+    const set = (open: boolean) => {
+      header.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    };
+    btn.addEventListener('click', () => set(!header.classList.contains('open')));
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
+    header.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => set(false)));
+    window.matchMedia('(min-width: 861px)').addEventListener('change', (e) => e.matches && set(false));
+  }
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(251, 251, 253, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar {
+    height: 4px;
+    background: var(--grad-brand);
+    background-size: 200% 100%;
+    animation: barflow 8s linear infinite;
+  }
+  @keyframes barflow {
+    to { background-position: 200% 0; }
+  }
+  .inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+  }
+  .logo {
+    height: 46px;
+    width: auto;
+    display: block;
+  }
+  .nav {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .pill {
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    transition: background 0.2s, color 0.2s;
+  }
+  .pill:hover {
+    color: var(--violet);
+  }
+  .pill.active {
+    background: var(--lilac-soft);
+    color: var(--violet-dark);
+  }
+  .cta {
+    margin-left: 8px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: var(--grad-btn);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 6px 18px rgba(109, 79, 224, 0.25);
+    white-space: nowrap;
+  }
+  .cta:hover {
+    color: #fff;
+    filter: brightness(1.08);
+  }
+  .toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    color: var(--ink);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .toggle .i-close {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .inner {
+      padding: 10px 16px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      height: 40px;
+    }
+    .cta {
+      margin-left: 0;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    :global(.js) .toggle {
+      display: inline-flex;
+    }
+    .nav {
+      order: 10;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    :global(.js) .nav {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      filter: blur(6px);
+      transition: max-height 0.4s ease, opacity 0.3s ease, filter 0.3s ease, padding 0.3s ease;
+    }
+    :global(.js) .pill {
+      font-size: 17px;
+      padding: 14px 16px;
+      border-radius: 14px;
+    }
+    .header:global(.open) .nav {
+      max-height: 480px;
+      opacity: 1;
+      filter: blur(0);
+      padding: 8px 0 6px;
+    }
+    .header:global(.open) .i-open {
+      display: none;
+    }
+    .header:global(.open) .i-close {
+      display: block;
+    }
+  }
+</style>

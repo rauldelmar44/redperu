@@ -1,0 +1,19 @@
+---
+interface Props {
+  eyebrow: string;
+  maxWidth?: number;
+}
+const { eyebrow, maxWidth } = Astro.props;
+---
+
+<div class="title" data-stagger="120" style={maxWidth ? `max-width:${maxWidth}px` : undefined}>
+  <p class="eyebrow">{eyebrow}</p>
+  <h1 class="h1"><slot /></h1>
+</div>
+
+<style>
+  .title {
+    display: grid;
+    gap: 16px;
+  }
+</style>

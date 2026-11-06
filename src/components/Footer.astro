@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-red.png';
+import { site, socials } from '../data/site';
+---
+
+<footer class="footer">
+  <div class="inner" data-stagger="100">
+    <Image src={logo} alt="Red de Empresas y Discapacidad" height={80} class="logo" />
+    <div class="socials">
+      {
+        socials.map((s) => (
+          <a href={s.url} target="_blank" rel="noopener" title={s.name} style={`background:${s.bg}`}>
+            <img src={s.icon} alt="" width="20" height="20" />
+            <span class="sr-only">{s.name}</span>
+          </a>
+        ))
+      }
+    </div>
+    <p>{site.domain} · <a href={`mailto:${site.email}`}>{site.email}</a></p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    background: #fff;
+  }
+  .inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    height: 40px;
+    width: auto;
+  }
+  .socials {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .socials a {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .socials a:hover {
+    filter: brightness(1.1);
+  }
+  .socials img {
+    display: block;
+  }
+  p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  p a {
+    color: inherit;
+  }
+  p a:hover {
+    color: var(--violet);
+  }
+</style>

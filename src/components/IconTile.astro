@@ -1,0 +1,26 @@
+---
+import type { AstroComponent } from '@lucide/astro';
+
+interface Props {
+  icon: AstroComponent;
+  bg: string;
+  size?: number;
+  radius?: number;
+}
+
+const { icon: Icon, bg, size = 52, radius = 16 } = Astro.props;
+const iconSize = Math.round(size / 2);
+---
+
+<div class="tile" style={`width:${size}px;height:${size}px;border-radius:${radius}px;background:${bg}`} aria-hidden="true">
+  <Icon size={iconSize} color="#fff" />
+</div>
+
+<style>
+  .tile {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
