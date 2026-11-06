@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://redperu.org/sitemap-index.xml
