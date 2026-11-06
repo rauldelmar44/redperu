@@ -39,6 +39,9 @@ export const grads = {
   GB: g(G, B),
 };
 
+// Degradados oscurecidos para tarjetas con TEXTO blanco encima (contraste ≥ 4,5:1)
+const t = { GT: g('#087A5C', '#0A7A72'), BV: g('#1670C0', V), VL: g(V, '#7B4FD8') };
+
 export const impact = [
   { value: '750', text: 'personas con discapacidad laboran en las empresas miembro' },
   { value: '80%', text: 'cuenta con una política de D&I' },
@@ -59,9 +62,9 @@ export const roles = [
 ];
 
 export const committees = [
-  { icon: Handshake, bg: grads.GT, title: 'Mesa de trabajo de aliados', text: 'Reforzar el posicionamiento y aporte de las consultoras y asociaciones especializadas en discapacidad.' },
-  { icon: BadgeCheck, bg: grads.BV, title: 'Comité de buenas prácticas', text: 'Investigar, innovar y difundir buenas prácticas relacionadas a la adecuada gestión de PcD.' },
-  { icon: Megaphone, bg: grads.VL, title: 'Comité de comunicaciones', text: 'Posicionar a la RED en RRSS y espacios empresariales.' },
+  { icon: Handshake, bg: t.GT, title: 'Mesa de trabajo de aliados', text: 'Reforzar el posicionamiento y aporte de las consultoras y asociaciones especializadas en discapacidad.' },
+  { icon: BadgeCheck, bg: t.BV, title: 'Comité de buenas prácticas', text: 'Investigar, innovar y difundir buenas prácticas relacionadas a la adecuada gestión de PcD.' },
+  { icon: Megaphone, bg: t.VL, title: 'Comité de comunicaciones', text: 'Posicionar a la RED en RRSS y espacios empresariales.' },
 ];
 
 export const advances = [

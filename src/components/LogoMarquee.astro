@@ -9,14 +9,15 @@ const rows = [
 ];
 ---
 
-<div class="marquee" aria-label="Logos de empresas miembro">
+<!-- Decorativo: la lista completa y nombrada está en /miembros (enlace "Ver miembros y aliados") -->
+<div class="marquee" aria-hidden="true">
   {
     rows.map((row) => (
       <div class="row">
         <div class:list={['track', row.dir]} style={`animation-duration:${row.dur}`}>
-          {[...row.items, ...row.items].map((m, i) => (
-            <div class="logo" aria-hidden={i >= row.items.length ? 'true' : undefined}>
-              <Image src={m.src} alt={m.alt} width={276} />
+          {[...row.items, ...row.items].map((m) => (
+            <div class="logo">
+              <Image src={m.src} alt="" width={276} />
             </div>
           ))}
         </div>

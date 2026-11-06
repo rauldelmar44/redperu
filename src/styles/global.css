@@ -9,7 +9,10 @@
   --text: #4a4870;
   --text-card: #2e2b5c;
   --muted: #6e6b8a;
-  --muted-2: #8a88a8;
+  /* #8A88A8 no alcanzaba 4,5:1 en texto pequeño; se iguala al gris accesible */
+  --muted-2: #6e6b8a;
+  /* Verde para TEXTO (5,3:1 sobre blanco). El verde de marca #0B8E6B se mantiene para fondos e íconos. */
+  --green-text: #087a5c;
   --bg: #fbfbfd;
   --surface: #fff;
   --border: #e6e7f0;
@@ -19,9 +22,10 @@
   --lilac-text: #c9c5e6;
 
   --grad-brand: linear-gradient(90deg, #0b8e6b, #13b3a0, #1d8fe8, #6d4fe0);
-  --grad-btn: linear-gradient(90deg, #0b8e6b, #1d8fe8, #6d4fe0);
+  /* Degradados con texto blanco encima: todas las paradas ≥ 4,5:1 */
+  --grad-btn: linear-gradient(90deg, #087a5c, #1670c0, #6d4fe0);
   --grad-text: linear-gradient(90deg, #0b8e6b, #1d8fe8, #6d4fe0);
-  --grad-block: linear-gradient(135deg, #0b8e6b 0%, #13a89a 35%, #1d8fe8 70%, #6d4fe0 100%);
+  --grad-block: linear-gradient(135deg, #087a5c 0%, #0a7a72 35%, #1670c0 70%, #6d4fe0 100%);
 
   --shadow-card: 0 8px 24px rgba(20, 18, 67, 0.05);
   --font: 'Figtree Variable', Figtree, Helvetica, Arial, sans-serif;
@@ -50,7 +54,7 @@ body {
 }
 
 a {
-  color: var(--green);
+  color: var(--green-text);
   text-decoration: none;
 }
 a:hover {
@@ -202,7 +206,7 @@ img {
 }
 
 /* Icon tint helpers (Lucide uses currentColor) */
-.c-green { color: var(--green); }
+.c-green { color: var(--green-text); }
 .c-violet { color: var(--violet); }
 .c-ink { color: var(--ink); }
 
@@ -280,6 +284,13 @@ html.js [data-reveal].in {
     padding: 14px 22px;
     justify-content: center;
   }
+}
+
+/* Animaciones decorativas pausadas por el usuario (botón "Pausar animaciones") */
+html.motion-paused *,
+html.motion-paused *::before,
+html.motion-paused *::after {
+  animation-play-state: paused !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

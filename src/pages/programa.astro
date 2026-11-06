@@ -12,7 +12,8 @@ import { benefits, route } from '../data/content';
       Seis etapas para una <span class="grad-text">gestión inclusiva</span> de personas con discapacidad
     </PageTitle>
 
-    <section class="grid-auto" style="--min:280px" aria-label="Etapas" data-stagger="110">
+    <h2 id="etapas" class="sr-only">Las seis etapas</h2>
+    <section class="grid-auto" style="--min:280px" aria-labelledby="etapas" data-stagger="110">
       {
         route.map((s, i) => (
           <article class="card">

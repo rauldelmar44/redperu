@@ -1,0 +1,105 @@
+---
+/**
+ * Botón global para pausar/reanudar el movimiento automático
+ * (carrusel de logos, fondo de circuitos y animaciones decorativas).
+ * WCAG 2.2.2 – Pausar, detener, ocultar. Recuerda la preferencia.
+ */
+import Pause from '@lucide/astro/icons/pause';
+import Play from '@lucide/astro/icons/play';
+---
+
+<button type="button" class="motion" data-motion-toggle aria-pressed="false">
+  <Pause size={18} class="i-pause" />
+  <Play size={18} class="i-play" />
+  <span class="mt-label">Pausar animaciones</span>
+</button>
+
+<script>
+  const KEY = 'redperu-motion-paused';
+  const root = document.documentElement;
+  const btn = document.querySelector<HTMLButtonElement>('[data-motion-toggle]');
+  const label = btn?.querySelector(".mt-label");
+
+  const apply = (paused: boolean, save = true) => {
+    root.classList.toggle('motion-paused', paused);
+    btn?.setAttribute('aria-pressed', String(paused));
+    if (label) label.textContent = paused ? 'Reanudar animaciones' : 'Pausar animaciones';
+    if (save) {
+      try { localStorage.setItem(KEY, paused ? '1' : '0'); } catch {}
+    }
+    document.dispatchEvent(new CustomEvent('motionchange', { detail: { paused } }));
+  };
+
+  let initial = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  try {
+    const saved = localStorage.getItem(KEY);
+    if (saved !== null) initial = saved === '1';
+  } catch {}
+  apply(initial, false);
+
+  btn?.addEventListener('click', () => apply(!root.classList.contains('motion-paused')));
+</script>
+
+<style>
+  .motion {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(20, 18, 67, 0.1);
+  }
+  .motion:hover {
+    color: var(--violet-dark);
+    border-color: var(--lilac-text);
+  }
+  .motion:focus-visible {
+    outline: 3px solid var(--violet);
+    outline-offset: 3px;
+  }
+  .i-play {
+    display: none;
+  }
+  :global(.motion-paused) .i-pause {
+    display: none;
+  }
+  :global(.motion-paused) .i-play {
+    display: block;
+  }
+  /* con 'reducir movimiento' del sistema ya no hay nada que pausar */
+  @media (prefers-reduced-motion: reduce) {
+    .motion {
+      display: none;
+    }
+  }
+  /* en pantallas pequeñas solo el ícono (el nombre accesible se mantiene) */
+  @media (max-width: 640px) {
+    .motion {
+      width: 44px;
+      padding: 0;
+      justify-content: center;
+    }
+    .mt-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+  }
+</style>

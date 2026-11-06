@@ -185,8 +185,9 @@ const {
       draw(dt);
       if (running) raf = requestAnimationFrame(loop);
     };
+    const paused = () => document.documentElement.classList.contains('motion-paused');
     const start = () => {
-      if (running || reduce) return;
+      if (running || reduce || paused()) return;
       running = true;
       last = 0;
       raf = requestAnimationFrame(loop);
@@ -199,6 +200,7 @@ const {
     new ResizeObserver(resize).observe(canvas);
     new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop())).observe(canvas);
     document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    document.addEventListener('motionchange', () => (paused() ? stop() : start()));
 
     const host = canvas.parentElement ?? canvas;
     host.addEventListener('pointermove', (e) => {
